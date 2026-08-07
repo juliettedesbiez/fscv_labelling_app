@@ -41,10 +41,15 @@ def get_files(d):
     return sorted(f for f in os.listdir(d) if f.lower().endswith(('.npy', '.txt', '.csv')))
 
 def load_arr(p):
-    """Load FSCV data array from file. Returns 2D array (voltage x time)."""
+    """Load FSCV data array from file. Returns 2D array (voltage x time).
+    Inverted per Bettina's guidance: the raw .txt files use a sign
+    convention that renders backwards on Pablo's colormap. This flips the
+    sign at the earliest point, so every downstream step sees correctly-
+    signed data consistently, for any files labelled from here on."""
     arr = np.load(p) if p.endswith('.npy') else np.loadtxt(p)
-    return arr[np.newaxis, :] if arr.ndim == 1 else arr  # Ensure 2D
-
+    arr = arr[np.newaxis, :] if arr.ndim == 1 else arr
+    return -arr
+  
 def bg_sub(arr, n=5):
     """Subtract baseline from first n seconds. Helps visualize signals."""
     nf = min(int(n * FSCV_HZ), arr.shape[1])  # Number of frames for baseline
