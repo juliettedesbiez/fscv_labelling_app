@@ -26,7 +26,37 @@ two paths point at the same file.
 
 ---
 
-## 2. Labels — which ones to use for which pipeline
+## 2. Sign convention
+
+Bettina identified that the raw `.txt`/`.npy` recording files use a sign
+convention that renders backwards on Pablo's colormap. The visual symptom
+is easy to spot: with un-inverted data, oxidation renders **blue** and
+reduction renders **green** — backwards from the correct convention
+(oxidation **green**, reduction **blue**) the colormap is built around.
+
+This app's `load_arr()` already corrects for this:
+```python
+def load_arr(path):
+    arr = np.load(path) if path.endswith('.npy') else np.loadtxt(path)
+    arr = arr[np.newaxis, :] if arr.ndim == 1 else arr
+    return -arr
+```
+No action needed to use it — just worth knowing why the colour plot you're
+labelling against shows the correct oxidation-green/reduction-blue
+convention, and what it would look like if this fix were ever accidentally
+removed. If a future copy of this file ever renders with the colours
+swapped, check this line first before assuming the labels or the data are
+wrong.
+
+The corresponding `load_arr()` in `make_windows_ipsc_binary.py`,
+`make_windows_organoid.py`, and `make_windows_3class.py` needs the same
+`-arr` fix — if you're setting up a fresh copy of any of these scripts,
+confirm it's present there too, since labelling and windowing need to agree
+on the same sign convention.
+
+---
+
+## 3. Labels — which ones to use for which pipeline
 
 | Key | Label | Colour | Use for binary? | Use for 3-class? |
 |---|---|---|---|---|
@@ -45,7 +75,7 @@ two paths point at the same file.
 
 ---
 
-## 3. Controls
+## 4. Controls
 
 | Key/action | Effect |
 |---|---|
@@ -62,7 +92,7 @@ Labelling (or deleting) autosaves to `OUTPUT_CSV` immediately — no separate sa
 
 ---
 
-## 4. Running it
+## 5. Running it
 
 ```bash
 python Labelling_App.py
@@ -89,7 +119,7 @@ in the current view).
 
 ---
 
-## 5. Output format
+## 6. Output format
 
 `OUTPUT_CSV` has one row per labelled region:
 
@@ -107,7 +137,7 @@ A file with no labelled regions simply has no rows in the CSV — it's what
 
 ---
 
-## 6. Backups
+## 7. Backups
 
 Every time you launch the app, if `OUTPUT_CSV` already exists, it's copied
 to `BACKUP_DIR` with a timestamp (`backup_YYYYMMDD_HHMMSS.csv`) before
