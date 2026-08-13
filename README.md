@@ -14,9 +14,9 @@ pipelines — which labels you use depends on which pipeline you're feeding.
 Paths are hardcoded at the top of the file — no command-line arguments.
 
 ```python
-PLOT_DIR   = r"...\bettina and juj organoid data for cohens"           # folder of raw recording files to label
-OUTPUT_CSV = r"...\bettina and juj organoid output for cohens\FSCV_labels_organoid_bettina.csv"   # where labels get saved
-BACKUP_DIR = r"...\bettina and juj organoid output for cohens\label_backups"   # timestamped backup on each launch
+PLOT_DIR   = r"...\organoid data"           # folder of raw recording files to label
+OUTPUT_CSV = r"...\organoid data output\FSCV_labels.csv"   # where labels get saved
+BACKUP_DIR = r"...\organoid data output\label_backups"   # timestamped backup on each launch
 FSCV_HZ    = 10                                                        # sampling rate, must match your recordings
 ```
 
